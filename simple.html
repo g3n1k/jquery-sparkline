@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>jQuery Sparklines Simple Example</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        body { font-family: helvetica, arial, san-serif; background-color: #fff; text-align: left; font-size: 0.9em; margin: 10em }
+    </style>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="jquery.sparkline.min.js"></script>
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+<style>
+.jqstooltip {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+</style>
+
+    <script type="text/javascript">
+
+    var counter = 0;
+
+    /* <![CDATA[ */
+    $(function() {
+        /** This code runs when everything has been loaded on the page */
+        /* Inline sparklines take their values from the contents of the tag */
+    //    $('.inlinesparkline').sparkline(); 
+
+        /* Sparklines can also take their values from the first argument passed to the sparkline() function */
+    //    var myvalues = [10,8,5,7,4,4,1];
+    //    $('.dynamicsparkline').sparkline(myvalues);
+
+        /* The second argument gives options such as specifying you want a bar chart */
+    //    $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
+
+        /* Use 'html' instead of an array of values to pass options to a sparkline with data in the tag */
+    //    $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
+
+    //    $('.sparkline-inlinebar').sparkline();
+    });
+    /* ]]> */
+
+
+function loadSparkline(){
+    $.post('data.json',{},function(data){
+        var id_spark = "sparkline-inlinebar-"+counter;
+        counter++;
+         $('#divsparkline').append(format_sparkline(id_spark, data));
+         $('#'+id_spark).sparkline();
+    },'json');
+}
+
+function format_sparkline(id, d){
+    var t = '<div class="col-md-1 text-center">';
+         t += '<h3>'+d.title+'</h3>';
+         t += '<h1>'+d.value+'</h1>';
+         t += '<span id="'+id+'">'+d.sparkline+'</span>';
+         t += '</div>';
+    return t;        
+}
+
+function createSparkline(){
+    var data = {
+        'title': $('#s-title').val(),
+        'value': $('#s-value').val(),
+        'sparkline': $('#s-spark').val()
+    };
+
+    var id_spark = "sparkline-inlinebar-"+counter;
+    counter++;
+    $('#div-gen-sparkline').append(format_sparkline(id_spark, data));
+    $('#'+id_spark).sparkline('html', {type: 'bar', barColor: 'green'});
+}
+
+    </script>
+</head>
+<body>
+
+
+<p><button onclick="loadSparkline();false;">load sparkline</button></p>
+
+<div class='row' id='divsparkline' >
+    
+</div>
+
+<div>
+    <div>
+        <input type='text' id='s-title' placeholder="title"/><br />
+        <input type='text' id='s-value' placeholder="value"/><br />
+        <input type='text' id='s-spark' placeholder="1,2,34,5,6"/><br />
+        <button onclick="createSparkline();false;">load sparkline</button>
+    </div>
+    <div id='div-gen-sparkline' class='row'></div>
+
+</div>
+
+</body>
+</html>
